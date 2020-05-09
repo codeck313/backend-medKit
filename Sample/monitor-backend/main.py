@@ -29,11 +29,16 @@ def create_patient(patient: schemas.Patient, db: Session = Depends(get_db)):
     return crud.create_user(db=db, patient=patient)
 
 
-@app.get("/patients/all", response_model=List[schemas.Patient])
+@app.get("/patients/all")
 def get_all_patients_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     print("hhhh")
     all_patients = crud.get_all_patients(db, skip=skip, limit=limit)
-    return all_patients
+    res = []
+    for patient in all_patients:
+        response = schemas.PatientResponse(patient[0], patient[1])
+        print(response)
+        res.append(response)
+    return res
 
 
 @app.delete("/patients/delete", response_model=str)

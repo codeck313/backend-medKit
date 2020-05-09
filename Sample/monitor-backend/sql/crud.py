@@ -8,7 +8,13 @@ def get_patient_by_id(db: Session, id: str):
 
 
 def get_all_patients(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Patient).offset(skip).limit(limit).all()
+    details = db.query(models.Patient, models.PatientDetails).filter(
+        models.Patient.id == models.PatientDetails.id).offset(skip).limit(limit).all()
+    print("Fetched....")
+    print(len(details))
+    for r in details:
+        print(r)
+    return details
 
 
 def create_user(db: Session, patient: schemas.Patient):
