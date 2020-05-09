@@ -1,10 +1,13 @@
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, WebSocket
+from fastapi.responses import HTMLResponse
+
 from sqlalchemy.orm import Session
 
 from sql import crud, models, schemas
 from sql.database import SessionLocal, engine
+import random
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -53,3 +56,23 @@ def get_patient_details(user_id: str, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="Patient not found")
     return db_user
+
+
+def generate_random():
+    return [round(random.uniform(30, 150), 2), round(random.uniform(30, 150), 2)]
+
+
+def generate_sample_data():
+    return {'123458': {'temp': generate_random(), 'heartRate': generate_random(), 'SpO2': generate_random(),
+                       'BP': generate_random()}}
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    print("connected")
+    while True:
+        print("here")
+        data = await websocket.receive_text()
+        print(data)
+        await websocket.send_json(generate_sample_data())
