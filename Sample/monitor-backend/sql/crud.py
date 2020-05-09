@@ -12,8 +12,9 @@ def get_all_patients(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, patient: schemas.Patient):
-    db_user = models.Patient(id=patient.id, name=patient.name, bedNumber=patient.bedNumber, sex=patient.sex,
-                             age=patient.age)
+    db_user = models.Patient(id=patient.id, Name=patient.Name, BedNo=patient.BedNo, Sex=patient.Sex,
+                             Age=patient.Age)
+    print("here")
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

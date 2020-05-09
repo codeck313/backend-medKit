@@ -5,10 +5,10 @@ from .database import Base
 
 
 class Patient(Base):
-    __tablename__ = "patients"
+    __tablename__ = "patient"
 
-    id = Column(String, primary_key=True, index=True)
-    name = Column(String)
-    bedNumber = Column(String)
-    sex = Column(String)
-    age = Column(Integer)
+    id = Column(Integer, primary_key=True, index=True)
+    Name = Column(String)
+    BedNo = Column(Integer)
+    Sex = Column(String)
+    Age = Column(Integer)

@@ -22,6 +22,7 @@ def get_db():
 
 @app.post("/patient/create", response_model=schemas.Patient)
 def create_patient(patient: schemas.Patient, db: Session = Depends(get_db)):
+    print('heeeee')
     db_user = crud.get_patient_by_id(db, id=patient.id)
     if db_user:
         raise HTTPException(status_code=400, detail="Patient already registered")
@@ -30,6 +31,7 @@ def create_patient(patient: schemas.Patient, db: Session = Depends(get_db)):
 
 @app.get("/patients/all", response_model=List[schemas.Patient])
 def get_all_patients_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    print("hhhh")
     all_patients = crud.get_all_patients(db, skip=skip, limit=limit)
     return all_patients
 
