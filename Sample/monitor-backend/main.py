@@ -4,8 +4,7 @@ from fastapi import Depends, FastAPI, HTTPException, WebSocket
 from fastapi.responses import HTMLResponse
 
 from sqlalchemy.orm import Session
-
-from sql import crud, models, schemas
+from sql import crud, models, schemas, response
 from sql.database import SessionLocal, engine
 import random
 
@@ -56,6 +55,18 @@ def get_patient_details(user_id: str, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="Patient not found")
     return db_user
+
+
+@app.get("/beds/all", description="Get All Beds")
+def get_patient_details(db: Session = Depends(get_db)):
+    all_beds_details = crud.get_all_bed_details(db)
+    if all_beds_details is None:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    details = []
+    for bed in all_beds_details:
+        print(bed)
+        details.append(response.BedResponse(bed[0], bed[1], bed[2]))
+    return details
 
 
 def generate_random():
