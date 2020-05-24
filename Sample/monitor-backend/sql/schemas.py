@@ -2,11 +2,10 @@ from pydantic import BaseModel
 
 
 class Patient(BaseModel):
-    id: int
-    Name: str
-    BedNo: int
-    Age: int
-    Sex: str
+    patient_id: int
+    name: str
+    age: int
+    sex: str
 
     class Config:
         orm_mode = True

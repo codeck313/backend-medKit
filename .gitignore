@@ -1,1 +1,2 @@
 *.db
+/Sample/monitor-backend/sql/__pycache__/
