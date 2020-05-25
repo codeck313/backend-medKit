@@ -1,2 +1,5 @@
 *.db
 /Sample/monitor-backend/sql/__pycache__/
+.vscode
+task.txt
+
