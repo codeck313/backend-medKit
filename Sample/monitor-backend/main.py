@@ -2,6 +2,8 @@ from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException, WebSocket
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from sqlalchemy.orm import Session
 from sql import crud, models, schemas, response
@@ -12,7 +14,13 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Dependency
 def get_db():
     try:

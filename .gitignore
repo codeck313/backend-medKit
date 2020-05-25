@@ -1,2 +1,4 @@
 *.db
-/Sample/monitor-backend/sql/__pycache__/
+__pycache__
+.vscode
+.python-version
