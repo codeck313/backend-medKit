@@ -10,8 +10,13 @@ class Patient(Base):
     name = Column(String)
     sex = Column(String)
     age = Column(Integer)
-    children = relationship("BedDetails")
-
+    heart_rate_minima = Column(Float)
+    heart_rate_maxima = Column(Float)
+    spo2_minima = Column(Float)
+    systolic_bp_maxima = Column(Float)
+    diastolic_bp_maxima = Column(Float)
+    ward_number = Column(String)
+    # children = relationship("BedDetails")
 
 
 class BedDetails(Base):
@@ -32,12 +37,13 @@ class MedicalDetails(Base):
     patient_id = Column(Integer, ForeignKey('patient.patient_id'))
     bed_no = Column(Integer)
     time = Column(DateTime)
-    tempCurrent = Column(Float)
-    tempAvg = Column(Float)
-    bpmCurrent = Column(Float)
-    bpmAvg = Column(Float)
-    bpCurrent = Column(Float)
-    bpAvg = Column(Float)
-    spO2Current = Column(Float)
-    spO2Avg = Column(Float)
-
+    temp_current = Column(Float)
+    temp_avg = Column(Float)
+    bpm_current = Column(Float)
+    bpm_avg = Column(Float)
+    bp_systolic_current = Column(Float)
+    bp_systolic_avg = Column(Float)
+    bp_diastolic_current = Column(Float)
+    bp_diastolic_avg = Column(Float)
+    spo2_current = Column(Float)
+    spo2_avg = Column(Float)

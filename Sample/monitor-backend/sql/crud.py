@@ -19,9 +19,9 @@ def create_user(db: Session, patient: schemas.Patient):
 
 
 def get_all_bed_details(db: Session):
-    bed_details = db.query(Patient, BedDetails, MedicalDetails).join(BedDetails,
-                                                                     Patient.patient_id == BedDetails.current_patient_id).join(
-        MedicalDetails, Patient.patient_id == MedicalDetails.patient_id).all()
+    bed_details = db.query(BedDetails, Patient, MedicalDetails).join(Patient,
+                                                                          Patient.patient_id == BedDetails.current_patient_id).join(
+        MedicalDetails, BedDetails.current_patient_id == MedicalDetails.patient_id).all()
     return bed_details
 
 
