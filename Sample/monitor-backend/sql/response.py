@@ -26,17 +26,19 @@ class BedResponse:
         self.name = patient_details.name
         self.age = patient_details.age
         self.sex = patient_details.sex
-        self.floor_number = bed_details.floor_number
-        self.bed_no = bed_details.floor_number
-        self.ip_address = bed_details.ip_address
-        self.ward_no = bed_details.ward_no
-        self.bed_id = str(bed_details.bed_id)
-        self.time = str(medical_details.time)
-        self.tempCurrent = medical_details.tempCurrent
-        self.tempAvg = medical_details.tempAvg
-        self.bpmCurrent = medical_details.bpmCurrent
-        self.bpmAvg = medical_details.bpmAvg
-        self.bpCurrent = medical_details.bpCurrent
-        self.bpAvg = medical_details.bpmAvg
-        self.spO2Current = medical_details.spO2Current
-        self.spO2Avg = medical_details.spO2Avg
+        if bed_details is not None:
+            self.floor_number = bed_details.floor_number
+            self.bed_no = bed_details.floor_number
+            self.ip_address = bed_details.ip_address
+            self.ward_no = bed_details.ward_no
+            self.bed_id = str(bed_details.bed_id)
+        if medical_details is not None:
+            self.time = str(medical_details.time)
+            self.tempCurrent = medical_details.tempCurrent
+            self.tempAvg = medical_details.tempAvg
+            self.bpmCurrent = medical_details.bpmCurrent
+            self.bpmAvg = medical_details.bpmAvg
+            self.bpCurrent = medical_details.bpCurrent
+            self.bpAvg = medical_details.bpmAvg
+            self.spO2Current = medical_details.spO2Current
+            self.spO2Avg = medical_details.spO2Avg
