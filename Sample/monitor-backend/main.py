@@ -4,7 +4,6 @@ from fastapi import Depends, FastAPI, HTTPException, WebSocket
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-
 from sqlalchemy.orm import Session
 from sql import crud, models, schemas, response
 from sql.database import SessionLocal, engine
@@ -21,6 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 # Dependency
 def get_db():
     try:
@@ -30,13 +31,13 @@ def get_db():
         db.close()
 
 
-@app.post("/patient/create", response_model=schemas.Patient, description="Create a new patient")
-def create_patient(patient: schemas.Patient, db: Session = Depends(get_db)):
-    db_user = crud.get_patient_by_id(db, id=patient.patient_id)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Patient already registered")
-    return crud.create_user(db=db, patient=patient)
-
+# @app.post("/patient/create", response_model=schemas.Patient, description="Create a new patient")
+# def create_patient(patient: schemas.Patient, db: Session = Depends(get_db)):
+#     db_user = crud.get_patient_by_id(db, id=patient.patient_id)
+#     if db_user:
+#         raise HTTPException(status_code=400, detail="Patient already registered")
+#     return crud.create_user(db=db, patient=patient)
+#
 
 @app.delete("/patients/delete", response_model=str)
 def delete_patient(id: str, db: Session = Depends(get_db)):
@@ -44,17 +45,17 @@ def delete_patient(id: str, db: Session = Depends(get_db)):
     return all_patients
 
 
-@app.get("/patients/{patient_id}", description="Read single patient")
-def get_patient_details(user_id: str, db: Session = Depends(get_db)):
-    db_user = crud.get_patient_by_id(db, id=user_id)
+@app.get("/beds/{bed_id}", description="Get Details of a Bed")
+def get_bed_details(bed_id: str, db: Session = Depends(get_db)):
+    db_user = crud.get_bed_details_by_id(db, bed_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="Patient not found")
     return response.BedResponse(db_user[0], db_user[1], db_user[2])
 
 
-@app.get("/beds/all", description="Get All Beds")
-def get_patient_details(db: Session = Depends(get_db)):
-    all_beds_details = crud.get_all_bed_details(db)
+@app.get("/beds/{floor_number}/{ward_number}", description="Get All Beds")
+def get_all_bed_details(floor_number: str, ward_number: str, db: Session = Depends(get_db)):
+    all_beds_details = crud.get_all_bed_details(db, ward_number, floor_number)
     if all_beds_details is None:
         raise HTTPException(status_code=404, detail="No Beds found")
     details = []
