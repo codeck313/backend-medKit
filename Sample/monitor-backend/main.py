@@ -1,17 +1,30 @@
 from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException, WebSocket
-from fastapi.responses import HTMLResponse
+from fastapi.responses import Response
+from fastapi.requests import Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.orm import Session
 from sql import crud, models, schemas, response
 from sql.database import SessionLocal, engine
 import random
+import traceback
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception:
+        traceback.print_exc()
+        return Response("Internal server error", status_code=500)
+
+
+app.middleware('http')(catch_exceptions_middleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -53,8 +66,8 @@ def get_bed_details(bed_id: str, db: Session = Depends(get_db)):
     return response.BedResponse(db_user[0], db_user[1], db_user[2])
 
 
-@app.get("/beds/{floor_number}/{ward_number}", description="Get All Beds")
-def get_all_bed_details(floor_number: str, ward_number: str, db: Session = Depends(get_db)):
+@app.get("/beds", description="Get All Beds")
+def get_all_bed_details(floor_number: str = None, ward_number: str = None, db: Session = Depends(get_db)):
     all_beds_details = crud.get_all_bed_details(db, ward_number, floor_number)
     if all_beds_details is None:
         raise HTTPException(status_code=404, detail="No Beds found")

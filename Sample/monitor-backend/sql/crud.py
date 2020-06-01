@@ -20,11 +20,16 @@ def get_bed_details_by_id(db: Session, bed_id: str):
 
 
 def get_all_bed_details(db: Session, ward_number: str, floor_number: str):
-    bed_details = db.query(BedDetails, Patient, MedicalDetails).join(Patient,
-                                                                     Patient.patient_id == BedDetails.current_patient_id).join(
-        MedicalDetails, BedDetails.current_patient_id == MedicalDetails.patient_id).filter(
-        BedDetails.ward_no == ward_number).filter(BedDetails.floor_number == floor_number).all()
-    return bed_details
+    qry = db.query(BedDetails, Patient, MedicalDetails).outerjoin(Patient,
+                                                                     Patient.patient_id == BedDetails.current_patient_id).outerjoin(
+        MedicalDetails, BedDetails.current_patient_id == MedicalDetails.patient_id)
+    
+    if ward_number is not None:
+        qry = qry.filter(BedDetails.ward_no == ward_number)
+    if floor_number is not None:
+        qry = qry.filter(BedDetails.floor_number == floor_number)
+    
+    return qry.all()
 
 
 def delete_patient_by_id(db: Session, id: str):
