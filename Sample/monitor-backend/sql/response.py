@@ -1,3 +1,4 @@
+from typing import List
 from .models import Patient, MedicalDetails, BedDetails
 
 
@@ -59,3 +60,8 @@ class BedResponse:
             self.bpDiastolicAvg = medical_details.bp_diastolic_avg
             self.spO2Current = medical_details.spo2_current
             self.spO2Avg = medical_details.spo2_avg
+
+
+class MedicDataRealtime:
+    ppg: List[float]
+    ecg: List[float]

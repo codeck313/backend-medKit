@@ -6,10 +6,15 @@ from fastapi.requests import Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.orm import Session
-from sql import crud, models, schemas, response
-from sql.database import SessionLocal, engine
+from paho.mqtt.client import Client as mqtt
+
+from .sql import crud, models, schemas, response
+from .sql.database import SessionLocal, engine
+
+
 import random
 import traceback
+import asyncio
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -86,12 +91,33 @@ def generate_sample_data():
                        'BP': generate_random()}}
 
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    print("connected")
+async def subscribe_realtime(bed_id: int, ws: WebSocket):
+    async def ws_send(data):
+        await ws.send_json(data)
+    
+    # simulate an endless series of messages from the mqtt topic
     while True:
-        print("here")
-        data = await websocket.receive_text()
-        print(data)
-        await websocket.send_json(generate_sample_data())
+        rtd = response.MedicDataRealtime()
+        # sending a list of 10 values
+        rtd.ppg = [
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100),
+            random.randrange(1, 100)
+        ]
+        await ws_send(rtd.__dict__)
+        await asyncio.sleep(0.5)
+
+    
+
+@app.websocket("/beds/{bed_id}/realtime")
+async def websocket_endpoint(websocket: WebSocket, bed_id: int):
+    await websocket.accept()
+    print(f"ws connected for bed id = {bed_id}")
+    await subscribe_realtime(bed_id, websocket)
